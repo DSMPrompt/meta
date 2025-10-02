@@ -1,28 +1,63 @@
-# MQTT data structures
+# MQTT Data Structures
 
-## The base & devices
-- Our root topic is shows/
-- Each show can be 'broadcasted' under the base topic by creating a show topic named the UUID of the show (the current show topic)
-- Every minute the DSM client brodcasts a heartbeat under the current show topic
-- Each client connected to the show should use it's per-install UUID to create a topic under <base>/<current show>/devices/<uuid>
-- A heartbeat should be sent to this topic every 30 seconds 
+## Base Structure & Device Registration
 
-## Shows
-- Following the previous remarks, the DSM client should broadcast the show data to <base>/<current show>/<property>
-- The following data fields are required:
-    - name
-    - location
-    - dsmIP
-    - scriptName
-    - status
-    - line
-    - calledCues
-    - timeCalls
-- Field Name: The name of the show as saved on the DSM client
-- Field Location: The location of the show as saved on the DSM client
-- Field dsmIP: The DSM client local wifi IP
-- Field scriptName: The name of the script as saved on the DSM client
-- Field status: The status of the show. The field updates on status changes from the DSM
-- Field line: The current line of the DSM client 
-- Field calledCues: The UUIDs of all the called cues. Swift array encoded as text. Syntax passing.
-- Field timeCalls: A string field. Value is nil when empty and on show init. When a time based call is made, such as a "begginers call", this field is updated to the enum decodable equivalent of the call. Each client is responsoble for shoing a full screen alert when this updates - and a close button. 
+**Root Topic**: `shows/`
+
+### Show Broadcasting
+
+- Each show is broadcast under the base topic using its UUID as the show topic name (referred to as the “current show topic”)
+- The DSM client broadcasts a heartbeat under the current show topic every minute
+
+### Device Registration
+
+- Each client connected to the show must register using its per-install UUID
+- Device topics follow this pattern: `<base>/<current show>/devices/<uuid>`
+- Each device must send a heartbeat to its topic every 30 seconds
+
+## Show Data Broadcasting
+
+The DSM client broadcasts show data to individual property topics under the current show:
+
+**Topic Pattern**: `<base>/<current show>/<property>`
+
+### Required Data Fields
+
+#### `name`
+
+The name of the show as saved on the DSM client
+
+#### `location`
+
+The location of the show as saved on the DSM client
+
+#### `dsmIP`
+
+The DSM client’s local WiFi IP address
+
+#### `scriptName`
+
+The name of the script as saved on the DSM client
+
+#### `status`
+
+The current status of the show. This field updates whenever the status changes on the DSM
+
+#### `line`
+
+The current line being executed on the DSM client
+
+#### `calledCues`
+
+An array of UUIDs representing all called cues, encoded as a Swift array in text format (requiring syntax parsing on the client side)
+
+#### `timeCalls`
+
+A string field for time-based calls such as “beginners call”
+
+**Behaviour**:
+
+- Value is `nil` when empty or on show initialisation
+- When a time-based call is made, this field updates to the enum-decodable equivalent of the call
+- Each client is responsible for displaying a full-screen alert when this field updates
+- Alerts must include a close button
