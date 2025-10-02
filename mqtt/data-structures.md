@@ -23,7 +23,7 @@ The DSM client broadcasts show data to individual property topics under the curr
 
 ### Required Data Fields
 
-#### `name`
+#### `title`
 
 The name of the show as saved on the DSM client
 
@@ -31,7 +31,7 @@ The name of the show as saved on the DSM client
 
 The location of the show as saved on the DSM client
 
-#### `dsmIP`
+#### `dsmNetworkIP`
 
 The DSM client’s local WiFi IP address
 
