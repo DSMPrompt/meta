@@ -1,2 +1,4 @@
 # meta
-Planning, data structures. Keeps us in line
+Stuff that doesn't fit in other repos.
+
+
